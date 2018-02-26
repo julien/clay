@@ -1,0 +1,21 @@
+{
+    "schema": {
+        "contentRenderer": "",
+        "contentRendererMap": {},
+        "fieldName": "",
+        "fieldsMap": {},
+        "fileTypeStylesMap": {},
+        "iconsMap": null,
+        "inputName": "",
+        "inputNameField": "",
+        "inputNamesMap": {},
+        "inputValueField": "",
+        "labelStylesMap": {},
+        "userColorsMap": {}
+    },
+    "spritemap": "spritemap.svg",
+    "item": "clay-card-item",
+    "groupName": "clay-card-grid-item-group-name",
+    "selectable": false,
+    "handleItemToggled_": ""
+}
