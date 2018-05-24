@@ -11,8 +11,6 @@ import templates from './ClayTooltip.soy.js';
 const singleton = Symbol();
 const singletonEnforcer = Symbol();
 
-const DEFAULT_SELECTORS = ['[data-title]', '[title]'];
-
 /**
  * Implementation of ClayTooltip.
  * @extends Component
@@ -57,24 +55,29 @@ class ClayTooltip extends Component {
 	created() {
 		this._eventHandler = new EventHandler();
 
-		const selectors = this.selectors.reduce((arr, val) => {
-			if (arr.indexOf(val) === -1) {
-				arr.push(val);
-			}
-			return arr;
-		}, DEFAULT_SELECTORS);
-
-		for (let selector of selectors) {
+		for (let selector of this.selectors) {
 			this._eventHandler.add(
 				dom.delegate(
 					document,
-					this.triggerEvents[0],
+					'focus',
 					selector,
 					this._handleMouseEnter.bind(this)
 				),
 				dom.delegate(
 					document,
-					this.triggerEvents[1],
+					'mouseenter',
+					selector,
+					this._handleMouseEnter.bind(this)
+				),
+				dom.delegate(
+					document,
+					'mouseleave',
+					selector,
+					this._handleMouseLeave.bind(this)
+				),
+				dom.delegate(
+					document,
+					'blur',
 					selector,
 					this._handleMouseLeave.bind(this)
 				)
@@ -109,7 +112,7 @@ class ClayTooltip extends Component {
 
 		this._content = content;
 		this.alignedPosition = Align.align(this.element, target, this.position);
-		this.elementClasses = 'show';
+		this._showTooltip = true;
 	}
 
 	/**
@@ -119,7 +122,7 @@ class ClayTooltip extends Component {
 	 * @protected
 	 */
 	_handleMouseLeave() {
-		this.elementClasses = '';
+		this._showTooltip = false;
 	}
 
 	/**
@@ -167,6 +170,8 @@ ClayTooltip.STATE = {
 	_content: Config.any()
 		.value('')
 		.internal(),
+
+	_showTooltip: Config.bool().value(false).internal(),
 
 	/**
 	 * The current position of the tooltip after being aligned via `Align.align`.
@@ -217,7 +222,7 @@ ClayTooltip.STATE = {
 	 * @memberof ClayTooltip
 	 * @type {!Array.<string>}
 	 */
-	selectors: Config.array().value([]),
+	selectors: Config.array().value(['[data-title]', '[title]']),
 
 	/**
 	 * Trigger events
@@ -226,7 +231,7 @@ ClayTooltip.STATE = {
 	 * @memberof ClayTooltip
 	 * @type {!Array.<string>}
 	 */
-	triggerEvents: Config.array().value(['mouseenter', 'mouseleave']),
+	triggerEvents: Config.array().value(['focus', 'mouseenter', 'mouseleave']),
 };
 
 Soy.register(ClayTooltip, templates);

@@ -5,6 +5,7 @@
  */
 {template .render}
 	{@param? _content: html|string}
+	{@param? _showTooltip: bool}
 	{@param? alignedPosition: number}
 	{@param? classMap: ?}
 	{@param? elementClasses: string}
@@ -14,8 +15,24 @@
 	{let $currentPosition: $alignedPosition ?: $position /}
 	{let $positionClass: isNonnull($currentPosition) ? $classes[$currentPosition] : 'clay-tooltip-bottom' /}
 
-	<div class="tooltip {$positionClass} {$elementClasses?:''}" role="tooltip">
+	{let $tooltipAttributes kind="attributes"}
+		class="tooltip
+			{sp}{$positionClass}
+
+			{if $elementClasses}
+				{sp}{$elementClasses}
+			{/if}
+
+			{if $_showTooltip}
+				{sp}show
+			{/if}			
+		"
+		role="tooltip"
+	{/let}
+
+	<div {$tooltipAttributes}>
 		<div class="arrow"></div>
+	
 		<div class="tooltip-inner">
 			{$_content}
 		</div>
